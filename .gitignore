@@ -1,5 +1,6 @@
 nw/
 ideas/
+.idea
 *.swp
 node_modules/
 bower_components/
