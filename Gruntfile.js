@@ -33,15 +33,28 @@ module.exports = function(grunt) {
         }
       }
     },
+      bower_concat: {
+          all: {
+              dest: 'assets/js/_bower.js',
+              dependencies: {
+                  'underscore': 'jquery',
+                  'backbone': 'underscore'
+              },
+              bowerOptions: {
+                  relative: false
+              }
+          }
+      },
     nodewebkit: {
       options: {
         platforms: ['osx', 'win'],
         buildDir: './builds',
       },
-      src: ['package.json', 'index.html', './assets/*', './assets/**', '!node_modules/']
+      src: ['package.json', 'index.html', './assets/*', './assets/**', 'node_modules/sonos/**','node_modules/xml2js/**']
     }
   });
 
+    grunt.loadNpmTasks('grunt-bower-concat');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-connect');
@@ -50,5 +63,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-node-webkit-builder');
 
   grunt.registerTask('serve', ['connect:server', 'watch', 'cssmin']);
-  grunt.registerTask('build', ['cssmin', 'nodewebkit']);
+  grunt.registerTask('build', ['bower_concat','cssmin', 'nodewebkit']);
 };

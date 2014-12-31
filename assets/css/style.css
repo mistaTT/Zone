@@ -99,7 +99,7 @@ section#playing {
 section#playing > div#album {
     width:100%;
     height:100%;
-    background-image: url("../img/paolo.jpg");
+    background-image: url("../img/no-cover.png");
     background-repeat: no-repeat;
     background-size: 100%;
     background-position: center;
@@ -111,7 +111,7 @@ section#playing > div#album {
 }
 
 section#playing > div#info {
-    width:200px;
+    width:70%;
     margin-left: 20%;
     padding-top: 30px;
     position:absolute;
@@ -155,6 +155,7 @@ div#buttons > .rewind, div#buttons > .play, div#buttons > .forward {
     font-size:18px;
     color:white;
     margin:20px;
+    cursor: pointer;
 }
 
 div#buttons > .rewind, div#buttons > .forward {
@@ -198,11 +199,12 @@ div#modes {
     border-left:1px solid transparent;
 }
 
-div#modes > .volume {
+div#modes > .volume, .repeat, .mute, .replay {
     display:inline-block;
     font-size:20px;
     color:white;
     margin:20px;
+    cursor: pointer;
 }
 
 div#modes > .volume {
@@ -269,21 +271,24 @@ section#grid {
     width:59.5%;
     height:100%;
     text-align:center;
+    overflow-y: auto;
 }
 
 /* Elements */
 div.element {
     display:inline-block;
     width:20%;
+    min-width: 120px;
     height:150px;
     line-height:1.5;
     margin-top:35px;
     margin-right:10px;
     margin-left:10px;
+    cursor: pointer;
 }
 
 div.meta > img.cover {
-    max-width:120px;
+    width:120px;
 }
 
 div.meta {
@@ -303,6 +308,7 @@ div.meta > p.album {
 section.sidebar.right > #devices > .device {
     margin-top:25px;
     text-align:center;
+    cursor: pointer;
 }
 
 section.sidebar.right > #devices > .device > img {
