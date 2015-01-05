@@ -118,12 +118,14 @@ section#playing > div#info {
 }
 
 section#playing > div#info > h1 {
+    text-shadow: 0 0 5px black;
     color:white;
     font-size:28px;
     font-weight:200;
 }
 
 section#playing > div#info > h3 {
+    text-shadow: 0 0 5px black;
     color:white;
     font-size:12px;
     font-weight:900;
@@ -284,11 +286,11 @@ div.element {
     margin-top:35px;
     margin-right:10px;
     margin-left:10px;
-    cursor: pointer;
 }
 
 div.meta > img.cover {
     width:120px;
+    cursor: pointer;
 }
 
 div.meta {
