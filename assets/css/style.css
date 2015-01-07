@@ -276,16 +276,34 @@ section#grid {
     overflow-y: auto;
 }
 
+section#browseby {
+    background-color: #F1F2F4;
+    display:inline-block;
+    width: 100%;
+}
+
+section#browseby ul {
+    list-style: none;
+}
+
+section#browseby ul li{
+    cursor: pointer;
+    display: list-item;
+    float: left;
+    margin: 5px;
+}
+
 /* Elements */
 div.element {
     display:inline-block;
     width:20%;
     min-width: 120px;
-    height:150px;
+    height:200px;
     line-height:1.5;
     margin-top:35px;
     margin-right:10px;
     margin-left:10px;
+    float: left;
 }
 
 div.meta > img.cover {

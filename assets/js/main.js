@@ -1,4 +1,4 @@
-//require('nw.gui').Window.get().showDevTools();
+require('nw.gui').Window.get().showDevTools();
 
 var sonos = require('sonos');
 
@@ -12,6 +12,8 @@ console.log('\nSearching for Sonos devices on network...');
 var devices = [];
 
 var progress;
+
+var mainSid = false;
 
 sonos.search(function(device, model) {
     var devInfo = '\n';
@@ -60,15 +62,26 @@ $('#devices').on('click','.device',function(){
 
     eventListener(Sonos);
 
-    Sonos.getMusicLibrary('albums', {start: 0, total: 25}, function(err, result){
-        $('#grid').html('');
-        $.each(result['items'], function(item,value){
-            if(value.albumArtURL.indexOf('/')==0) value.albumArtURL = 'http://'+Sonos.host+':'+Sonos.port+value.albumArtURL;
-            html = '<div class="element"> <div class="meta"><img onerror="this.src=\'assets/img/no-cover.png\'" class="cover" src="'+value.albumArtURL+'"> <h4 class="artist">'+value.artist+'</h4> <p class="album">'+value.title+'</p> </div> </div>';
-            $('#grid').append(html);
-        });
-    });
         updateInfo(Sonos);
+    });
+
+    $('#browseby').on('click','li', function () {
+
+        var host = $('#controls').attr('class');
+
+        var browseby = $(this).attr('id');
+
+        Sonos = new sonos.Sonos(host);
+
+        Sonos.getMusicLibrary(browseby,{start: 0, total: 25}, function(err, result){
+            console.log(result);
+            $('#elements').html('');
+
+            $.each(result['items'], function(item,value){
+                html = '<div class="element"> <div class="meta"><img onerror="this.src=\'assets/img/no-cover.png\'" class="cover" src="'+value.albumArtURL+'"> <h4 class="artist">'+value.artist+'</h4> <p class="album">'+value.title+'</p> </div> </div>';
+                $('#elements').append(html);
+            });
+        });
     });
 
     $('div#controls').on('click','span',function () {
@@ -88,16 +101,6 @@ function updateInfo(Sonos) {
 
     $('#controls').removeClass().addClass(Sonos.host);
 
-    Sonos.getCurrentState(function(err,state) {
-        if (state == 'playing') {
-            $('.play i').removeClass('fa-play').addClass('fa-pause');
-        }
-        else {
-            $('.play i').removeClass('fa-pause').addClass('fa-play');
-            clearInterval(progress);
-        }
-    });
-
     Sonos.currentTrack(function(err, track) {
         if(track) {
             setProgress(track.duration, track.position);
@@ -113,6 +116,16 @@ function updateInfo(Sonos) {
             $('section#playing > div#album').css('background-image','url("'+track.albumArtURL+'")');
         }
         });
+
+    Sonos.getCurrentState(function(err,state) {
+        if (state == 'playing') {
+            $('.play i').removeClass('fa-play').addClass('fa-pause');
+        }
+        else {
+            $('.play i').removeClass('fa-pause').addClass('fa-play');
+            clearInterval(progress);
+        }
+    });
 }
 
 function updateProgress()
@@ -159,6 +172,7 @@ function play(host,file)
 
         }
         updateInfo(Sonos);
+        return state;
     });
 }
 
@@ -211,8 +225,14 @@ function eventListener(Sonos)
         if (err) throw err;
 
         x.addService('/MediaRenderer/AVTransport/Event', function(error, sid) {
-        //x.addService('/QPlay/Event', function(error, sid) {
             if (error) throw err;
+            mainSid = sid;
+            console.log('Successfully subscribed, with subscription id', sid);
+        });
+
+        x.addService('/MediaRenderer/RenderingControl/Event', function(error, sid) {
+            if (error) throw err;
+            mainSid = sid;
             console.log('Successfully subscribed, with subscription id', sid);
         });
 
