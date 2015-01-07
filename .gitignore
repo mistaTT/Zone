@@ -4,6 +4,6 @@ ideas/
 *.swp
 node_modules/
 bower_components/
-builds
+builds/zone
 build.sh
 cache
