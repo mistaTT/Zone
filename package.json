@@ -13,6 +13,7 @@
     "transparent": true
   },
   "dependencies": {
+    "xml2js": "~0.2.8",
     "sonos": "bencevans/node-sonos.git"
   },
   "devDependencies": {
