@@ -19,14 +19,15 @@ sonos.search(function(device, model) {
     var devInfo = '\n';
     var html;
 
-    device.getCurrentState(function(err,state){
-        if(state=='playing') eventListener(device);
-    });
-
     device.deviceDescription(function(err,data){
         if(data.roomName)
             devices.push({host:device.host,roomName:data.roomName,displayName:data.displayName});
         if(data.displayName!='BRIDGE') {
+
+          device.getCurrentState(function(err,state){
+            if(state=='playing') eventListener(device);
+          });
+
             html = '<div class="device play-five" id="' + device.host + '">' + data.roomName + ' ('+data.displayName+')' + '</div>';
             $('#devices').append(html);
         }
@@ -95,6 +96,21 @@ $('#devices').on('click','.device',function(){
         console.log(button);
 
     });
+
+  $('ul.items').on('click','li',function () {
+
+    var button = $(this).attr('id');
+
+    Sonos.getMusicLibrary(button,{start: 0, total: 25}, function(err, result){
+      $('#elements').html('');
+
+      $.each(result['items'], function(item,value){
+        html = '<div class="element"> <div class="meta"><img onerror="this.src=\'assets/img/no-cover.png\'" class="cover" src="'+value.albumArtURL+'"> <h4 class="artist">'+value.artist+'</h4> <p class="album">'+value.title+'</p> </div> </div>';
+        $('#elements').append(html);
+      });
+    });
+
+  });
 });
 
 function updateInfo(Sonos) {
@@ -241,12 +257,14 @@ function eventListener(Sonos)
             //console.log('Received event from', endpoint, '(' + sid + ') with data:', data, '\n\n');
             //if ((!util.isArray(data)) || (data.length < 1)) return {};
             var LastChange = data.LastChange;
-            if (LastChange) {
+          /*
+          if (LastChange) {
                 return (new xml2js.Parser()).parseString(LastChange, function (err, data) {
                         console.log(data.Event.InstanceID[0]);
                     }
                 );
             }
+            */
         });
     });
 }
