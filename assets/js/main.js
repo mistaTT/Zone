@@ -1,4 +1,4 @@
-require('nw.gui').Window.get().showDevTools();
+//require('nw.gui').Window.get().showDevTools();
 
 var sonos = require('sonos');
 
