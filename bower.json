@@ -10,6 +10,7 @@
     "sonos"
   ],
   "dependencies": {
+    "fontawesome": null,
     "backbone": null,
     "jquery": null
 },
