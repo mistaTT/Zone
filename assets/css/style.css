@@ -224,6 +224,7 @@ section.sidebar {
 section.sidebar.left {
     border-right: solid #CED1D6 1px;
     float:left;
+    overflow-y: scroll;
 }
 
 section.sidebar.left > * {
@@ -236,6 +237,7 @@ section.sidebar > .list {
 }
 
 .list > ul.items > li {
+    cursor: pointer;
     margin: 1em 0;
     font-size:12px;
 }

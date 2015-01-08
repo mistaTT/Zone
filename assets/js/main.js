@@ -61,6 +61,14 @@ $('#devices').on('click','.device',function(){
 
     Sonos = new sonos.Sonos(player);
 
+  Sonos.getMusicServices(function(err,data){
+    _.each(data.items, function(item){
+      html = '<li class="item"><i class="fa fa-'+item.serviceName.toLowerCase()+'"></i> '+item.serviceName+'</li>';
+      $('#services').append(html);
+    });
+
+  });
+
     eventListener(Sonos);
 
         updateInfo(Sonos);
