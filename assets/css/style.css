@@ -308,12 +308,12 @@ div.element {
     float: left;
 }
 
-div.meta > img.cover {
+div.meta img.cover {
     width:120px;
-    cursor: pointer;
 }
 
 div.meta {
+    position: relative;
     text-align:left;
 }
 
@@ -324,6 +324,34 @@ div.meta > h4.artist {
 
 div.meta > p.album {
     font-size:12px;
+}
+
+div .mask {
+    text-align: center;
+    background-color: #333333;
+    width: 120px;
+    height: 120px;
+    opacity: 0;
+    position: absolute;
+    top: 0px;
+    color: #ffffff;
+    font-size: 50px;
+    cursor: pointer;
+    transition: opacity 0.2s 0s ease-in-out;
+}
+
+div .mask a {
+    color: #ffffff;
+}
+
+div .mask:hover {
+    transition: opacity 0.2s 0s ease-in-out;
+    opacity: 0.5;
+}
+
+div .mask i {
+    position: relative;
+    top: 20px;
 }
 
 /* Sidebar right */

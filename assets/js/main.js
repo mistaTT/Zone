@@ -1,4 +1,4 @@
-//require('nw.gui').Window.get().showDevTools();
+require('nw.gui').Window.get().showDevTools();
 
 var sonos = require('sonos');
 
@@ -13,25 +13,36 @@ var devices = [];
 
 var progress;
 
-var mainSid = false;
+var mainSid = [];
 
 sonos.search(function(device, model) {
-    var devInfo = '\n';
+    var devInfo = [];
     var html;
 
-    device.deviceDescription(function(err,data){
-        if(data.roomName)
-            devices.push({host:device.host,roomName:data.roomName,displayName:data.displayName});
-        if(data.displayName!='BRIDGE') {
+  device.deviceDescription(function(err,data){
+    if(data.displayName!='BRIDGE') {
 
-          device.getCurrentState(function(err,state){
-            if(state=='playing') eventListener(device);
-          });
+      device.getTopology(function(err,info){
+        _.each(info.zones, function(zone){
+          html = '';
+          console.log(zone);
+          if(zone.coordinator=='true') {
+            if(zone.name == data.roomName)
+            {
+              html = '<div class="device play-five" id="' + device.host + '">' + zone.name + ' ('+data.displayName+')' + '</div>';
+            }
+          }
+        });
+        $('#devices').append(html);
+      });
 
-            html = '<div class="device play-five" id="' + device.host + '">' + data.roomName + ' ('+data.displayName+')' + '</div>';
-            $('#devices').append(html);
-        }
-    });
+
+      device.getCurrentState(function(err,state){
+        devInfo.push({host:device.host,roomName:data.roomName,displayName:data.displayName});
+        if(state=='playing') eventListener(device);
+      });
+    }
+  });
 /*
     devInfo += 'Device \t' + JSON.stringify(device) + ' (' + model + ')\n';
     device.getZoneAttrs(function(err, attrs) {
@@ -61,17 +72,8 @@ $('#devices').on('click','.device',function(){
 
     Sonos = new sonos.Sonos(player);
 
-  Sonos.getMusicServices(function(err,data){
-    _.each(data.items, function(item){
-      html = '<li class="item"><i class="fa fa-'+item.serviceName.toLowerCase()+'"></i> '+item.serviceName+'</li>';
-      $('#services').append(html);
-    });
+    eventListener(Sonos,mainSid);
 
-  });
-
-    eventListener(Sonos);
-
-        updateInfo(Sonos);
     });
 
     $('#browseby').on('click','li', function () {
@@ -87,7 +89,9 @@ $('#devices').on('click','.device',function(){
             $('#elements').html('');
 
             $.each(result['items'], function(item,value){
-                html = '<div class="element"> <div class="meta"><img onerror="this.src=\'assets/img/no-cover.png\'" class="cover" src="'+value.albumArtURL+'"> <h4 class="artist">'+value.artist+'</h4> <p class="album">'+value.title+'</p> </div> </div>';
+              //console.log(value);
+              html = '<div class="element"><div class="meta"><img onerror="this.src=\'assets/img/no-cover.png\'" class="cover" src="'+value.albumArtURL+'"><div class="mask"><a class="play" href="'+value.uri+'"><i class="fa fa-play-circle-o"></i></a></div><h4 class="artist">'+value.artist+'</h4><p class="album">'+value.title+'</p></div></div>';
+                // '<div class="element"> <div class="meta"><img onerror="this.src=\'assets/img/no-cover.png\'" class="cover" src="'+value.albumArtURL+'"> <h4 class="artist">'+value.artist+'</h4> <p class="album">'+value.title+'</p> </div> </div>';
                 $('#elements').append(html);
             });
         });
@@ -105,15 +109,33 @@ $('#devices').on('click','.device',function(){
 
     });
 
+  $('#grid').on('click','a', function (){
+
+    var host = $('#controls').attr('class');
+
+    file = $(this).attr('href');
+
+    Sonos = new sonos.Sonos(host);
+
+    Sonos.play(file,function (err,playing){
+        console.log(err);
+    });
+
+  });
+
   $('ul.items').on('click','li',function () {
 
+    var host = $('#controls').attr('class');
+
     var button = $(this).attr('id');
+
+    Sonos = new sonos.Sonos(host);
 
     Sonos.getMusicLibrary(button,{start: 0, total: 25}, function(err, result){
       $('#elements').html('');
 
       $.each(result['items'], function(item,value){
-        html = '<div class="element"> <div class="meta"><img onerror="this.src=\'assets/img/no-cover.png\'" class="cover" src="'+value.albumArtURL+'"> <h4 class="artist">'+value.artist+'</h4> <p class="album">'+value.title+'</p> </div> </div>';
+        html = '<div class="element"><div class="meta"><img onerror="this.src=\'assets/img/no-cover.png\'" class="cover" src="'+value.albumArtURL+'"><div class="mask"><a class="play" href="'+value.uri+'"><i class="fa fa-play-circle-o"></i></a></div><h4 class="artist">'+value.artist+'</h4><p class="album">'+value.title+'</p></div></div>';
         $('#elements').append(html);
       });
     });
@@ -137,16 +159,16 @@ function updateInfo(Sonos) {
             }
             else
                 track.albumArtURL = 'assets/img/no-cover.png';
-            $('section#playing > div#album').css('background-image','url("'+track.albumArtURL+'")');
+            $('section#playing > div#album').css('background-image','url("'+decodeURIComponent(track.albumArtURL)+'")');
         }
         });
 
     Sonos.getCurrentState(function(err,state) {
         if (state == 'playing') {
-            $('.play i').removeClass('fa-play').addClass('fa-pause');
+            $('#controls .play i').removeClass('fa-play').addClass('fa-pause');
         }
         else {
-            $('.play i').removeClass('fa-pause').addClass('fa-play');
+            $('#controls .play i').removeClass('fa-pause').addClass('fa-play');
             clearInterval(progress);
         }
     });
@@ -189,8 +211,8 @@ function play(host,file)
            state =  pause(host);
         }
         else {
-            Sonos.play(function(err, playing) {
-                $('.play i').removeClass('fa-play').addClass('fa-pause');
+            Sonos.play(file, function(err, playing) {
+                $('#controls .play i').removeClass('fa-play').addClass('fa-pause');
                 state = playing;
             });
 
@@ -248,15 +270,27 @@ function eventListener(Sonos)
     x.listen(function(err) {
         if (err) throw err;
 
+      console.log(mainSid);
+/*
+      if(mainSid.length >0) {
+        _.each(mainSid,function (element){
+          if(Sonos.host==element.host) {
+            x.removeService(element.sid, function (err, callback) {
+              console.log('Successfully unsubscribed, with subscription id', element.sid);
+            });
+          }
+        });
+      }
+*/
         x.addService('/MediaRenderer/AVTransport/Event', function(error, sid) {
             if (error) throw err;
-            mainSid = sid;
+            mainSid.push({'host':Sonos.host, 'sid':sid});
             console.log('Successfully subscribed, with subscription id', sid);
         });
 
         x.addService('/MediaRenderer/RenderingControl/Event', function(error, sid) {
             if (error) throw err;
-            mainSid = sid;
+            mainSid.push({'host':Sonos.host, 'sid':sid});
             console.log('Successfully subscribed, with subscription id', sid);
         });
 
@@ -275,4 +309,23 @@ function eventListener(Sonos)
             */
         });
     });
+}
+function listMusicServices(Sonos)
+{
+
+  Sonos.getAccounts(function (err, accounts){
+    Sonos.getMusicServices(function (err, data) {
+      $('#services').html('');
+      _.each(data.items, function (item) {
+        _.each(accounts, function (account){
+          if(account.type==item.id) {
+            html = '<li class="item"><i class="fa fa-' + item.serviceName.toLowerCase() + '"></i> ' + item.serviceName + '('+item.nick+')</li>';
+            $('#services').append(html);
+          }
+        });
+      });
+
+    });
+  });
+
 }

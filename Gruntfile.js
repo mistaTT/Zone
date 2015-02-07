@@ -48,8 +48,9 @@ module.exports = function(grunt) {
       },
     nodewebkit: {
       options: {
+        version: 'v0.11.5',
         platforms: ['osx', 'win','linux64'],
-        buildDir: './builds',
+        buildDir: './builds'
       },
       src: ['package.json', 'index.html', './assets/*', './assets/**', 'node_modules/sonos/**','node_modules/xml2js/**']
     }
