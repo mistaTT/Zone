@@ -5,8 +5,8 @@
   "window": {
     "toolbar": false,
     "width": 1000,
-    "height": 600,
-    "resizable": false,
+    "height": 700,
+    "resizable": true,
     "frame": false,
     "title": "Zone",
     "position": "center",
@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "xml2js": "~0.2.8",
-    "sonos": "bencevans/node-sonos.git"
+    "sonos": "mistaTT/node-sonos.git"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
