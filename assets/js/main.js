@@ -20,7 +20,7 @@ sonos.search(function(device, model) {
     var html;
 
   device.deviceDescription(function(err,data){
-    if(data.displayName!='BRIDGE') {
+    if(data.displayName!='BRIDGE' && data.displayName!='BOOST') {
 
       device.getTopology(function(err,info){
         _.each(info.zones, function(zone){
