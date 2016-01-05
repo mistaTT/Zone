@@ -145,6 +145,8 @@ $('#devices').on('click','.device',function(){
 
 function updateInfo(Sonos) {
 
+  listMusicServices(Sonos);
+
     $('#controls').removeClass().addClass(Sonos.host);
 
     Sonos.currentTrack(function(err, track) {
@@ -319,7 +321,7 @@ function listMusicServices(Sonos)
       _.each(data.items, function (item) {
         _.each(accounts, function (account){
           if(account.type==item.id) {
-            html = '<li class="item"><i class="fa fa-' + item.serviceName.toLowerCase() + '"></i> ' + item.serviceName + '('+item.nick+')</li>';
+            html = '<li class="item"><i class="fa fa-' + item.serviceName.toLowerCase() + '"></i> ' + item.serviceName + ' ('+account.nick+')</li>';
             $('#services').append(html);
           }
         });

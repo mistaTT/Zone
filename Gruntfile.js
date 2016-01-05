@@ -43,7 +43,10 @@ module.exports = function(grunt) {
               },
               bowerOptions: {
                   relative: false
-              }
+              },
+            mainFiles: {
+              'fontawesome': 'css/font-awesome.min.css'
+            }
           }
       },
     nodewebkit: {
