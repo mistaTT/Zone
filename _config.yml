@@ -1,0 +1,8 @@
+title: Zone
+description: Zone is an alternative to the official Sonos controller.
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-dinky
+
+gems:
+  - jekyll-mentions
